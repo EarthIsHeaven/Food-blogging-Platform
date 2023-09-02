@@ -63,6 +63,10 @@ app.post("/login", function (req, res) {
 app.get("/post", function (req, res) {
     res.render("post.ejs");
 })
+app.post("/post", function (req, res) {
+
+})
+
 app.get("/detail", function (req, res) {
     res.render("detail.ejs");
 })
