@@ -16,6 +16,12 @@ app.get("/login", function (req, res) {
 app.get("/home", function (req, res) {
     res.render("home.ejs");
 })
+app.get("/post", function (req, res) {
+    res.render("post.ejs");
+})
+app.get("/detail", function (req, res) {
+    res.render("detail.ejs");
+})
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
