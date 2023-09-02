@@ -1,28 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
-    <link href="css/style.css" rel="stylesheet" />
-</head>
-
-<body>
-    <div class="box">
-        <div>
-            <img src="images\Burger.webp" alt="food" width="60%" />
-        </div>
-        <div class="buttons">
-            <button class="btn btn-success rounded-pill px-3" type="button">Register</button>
-            <button class="btn btn-primary rounded-pill px-3" type="button">Login</button>
+<%- include("partials/header.ejs") %>
+    <div class="login">
+        <h1 style="text-align: center;">Food Blogging Platform</h1>
+        <div class="box">
+            <div>
+                <img class="burger" src="images\Burger.webp" alt="food" />
+            </div>
+            <div class="buttons">
+                <a href="/register"><button class="register btn btn-success rounded-pill px-3"
+                        type="button">Register</button></a>
+                <a href="/login"><button class="btn btn-primary rounded-pill px-3" type="button">Login</button></a>
+            </div>
         </div>
     </div>
-</body>
-
-</html>
+    <%- include("partials/footer.ejs") %>
