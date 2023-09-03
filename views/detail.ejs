@@ -2,12 +2,20 @@
 
     <div class="detail">
         <div style="text-align: center; margin-bottom: 1rem;">
-            <h1>Recipe name</h1>
+            <h1>
+                <%= post.title %>
+            </h1>
         </div>
-        <h2>Ingredients</h2>
-        <h2>Cooking Steps</h2>
+        <h2>
+            <%= post.ingredients %>
+        </h2>
+        <h2>
+            <%= post.cookingSteps %>
+        </h2>
         <img class="postedImage" src="images\postedImage.jpg" alt="postedImage" />
-        <h2>Chief Name</h2>
+        <h2>
+            <%= post.chief %>
+        </h2>
     </div>
 
     <%- include("partials/footer.ejs") %>

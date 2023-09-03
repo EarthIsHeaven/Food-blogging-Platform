@@ -67,6 +67,8 @@ app.get("/post", function (req, res) {
 app.post("/post", function (req, res) {
     const post = {
         title: req.body.recipeName,
+        ingredients: req.body.ingredients,
+        cookingSteps: req.body.cookingSteps,
         chief: req.body.chiefName
     }
     posts.push(post);
@@ -75,9 +77,19 @@ app.post("/post", function (req, res) {
     });
 })
 
-app.get("/detail", function (req, res) {
-    res.render("detail.ejs");
-})
+app.get('/posts/:topic', (req, res) => {
+    let requestedTitle = _.lowerCase(req.params.topic);
+
+    posts.forEach(function (post) {
+        let postedTitle = _.lowerCase(post.title);
+
+        if (requestedTitle == postedTitle) {
+            res.render("detail.ejs", {
+                post: post
+            });
+        };
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
