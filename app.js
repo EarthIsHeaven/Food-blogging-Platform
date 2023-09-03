@@ -18,6 +18,7 @@ const userSchema = new Schema({
     email: String,
     password: String
 });
+const posts = [];
 
 const User = mongoose.model('User', userSchema);
 
@@ -64,7 +65,14 @@ app.get("/post", function (req, res) {
     res.render("post.ejs");
 })
 app.post("/post", function (req, res) {
-
+    const post = {
+        title: req.body.recipeName,
+        chief: req.body.chiefName
+    }
+    posts.push(post);
+    res.render("home.ejs", {
+        posts: posts
+    });
 })
 
 app.get("/detail", function (req, res) {

@@ -2,6 +2,10 @@ body {
     background-color: antiquewhite;
 }
 
+.container {
+    min-height: 100vh;
+}
+
 .footer {
     background-color: aqua;
 }

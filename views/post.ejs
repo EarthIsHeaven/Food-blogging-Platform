@@ -1,31 +1,30 @@
 <%- include("partials/header.ejs") %>
+
     <div class="postBox">
         <h1>Add Post</h1>
-        <form class="formPost">
-            <div class="mb-3">
-                <label class="form-label">Recipe Name</label>
-                <input type="text" class="form-control">
+        <form action="/post" method="POST" class="formPost">
+            <div class="form-group mb-3">
+                <label for="text">Recipe Name</label>
+                <input type="text" class="form-control" name="recipeName">
             </div>
             <div class="mb-3">
                 <label class="form-label">Ingredients</label>
-                <textarea class="form-control" rows="2"></textarea>
+                <textarea class="form-control" name="ingredients" rows="2"></textarea>
             </div>
             <div class="mb-3">
                 <label class="form-label">Cooking Steps</label>
-                <textarea class="form-control" rows="2"></textarea>
+                <textarea class="form-control" name cookingSteps rows="2"></textarea>
             </div>
             <div class="file mb-3">
-                <form>
-                    <input id="file" type="file" />
-                    <button class="btn btn-secondary">Upload</button>
-                </form>
+                <input id="file" type="file" />
             </div>
-            <div class="mb-3">
-                <label class="form-label">Chief Name</label>
-                <input type="text" class="form-control">
+            <div class="form-group mb-3">
+                <label for="text">Chief Name</label>
+                <input type="text" class="form-control" name="chiefName">
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+
     <%- include("partials/footer.ejs") %>

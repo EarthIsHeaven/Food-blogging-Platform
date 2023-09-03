@@ -1,24 +1,29 @@
 <%- include("partials/header.ejs") %>
+
     <h1 style="text-align: center;">Recipes</h1>
     <div class="addPost">
         <a href="/post"><button type="button" class="btn btn-primary">Add Post</button></a>
     </div>
     <div class="items">
-        <div class="item">
-            <h2>Recipe Name</h2>
-            <p>By chief name</p>
-        </div>
-        <div class="item">
-            <h2>Recipe Name</h2>
-            <p>By chief name</p>
-        </div>
-        <div class="item">
-            <h2>Recipe Name</h2>
-            <p>By chief name</p>
-        </div>
-        <div class="item">
-            <h2>Recipe Name</h2>
-            <p>By chief name</p>
-        </div>
+        <% if(locals.posts){ %>
+            <% posts.forEach((post)=>{ %>
+                <div class="item">
+                    <h2>
+                        <%= post.title %>
+                    </h2>
+                    <p>
+                        <%= post.chief %>
+                    </p>
+                </div>
+                <% }); %>
+                    <% } else{ %>
+                        <div class="item">
+                            <h2>Recipe Name</h2>
+                            <p>By chief name</p>
+                        </div>
+                        <% } %>
+
+
     </div>
+
     <%- include("partials/footer.ejs") %>
