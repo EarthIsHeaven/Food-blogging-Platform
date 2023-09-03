@@ -3,6 +3,18 @@ const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
 const mongoose = require("mongoose");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/images')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+})
+
+const upload = multer({ storage: storage })
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -64,18 +76,19 @@ app.post("/login", function (req, res) {
 app.get("/post", function (req, res) {
     res.render("post.ejs");
 })
-app.post("/post", function (req, res) {
+app.post('/post', upload.single('file'), function (req, res) {
     const post = {
         title: req.body.recipeName,
         ingredients: req.body.ingredients,
         cookingSteps: req.body.cookingSteps,
-        chief: req.body.chiefName
+        chief: req.body.chiefName,
+        imageName: req.file.originalname
     }
     posts.push(post);
     res.render("home.ejs", {
         posts: posts
     });
-})
+});
 
 app.get('/posts/:topic', (req, res) => {
     let requestedTitle = _.lowerCase(req.params.topic);

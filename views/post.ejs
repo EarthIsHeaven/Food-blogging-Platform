@@ -2,7 +2,7 @@
 
     <div class="postBox">
         <h1>Add Post</h1>
-        <form action="/post" method="POST" class="formPost">
+        <form action="/post" enctype="multipart/form-data" method="POST" class="formPost">
             <div class="form-group mb-3">
                 <label for="text">Recipe Name</label>
                 <input type="text" class="form-control" name="recipeName">
@@ -16,7 +16,7 @@
                 <textarea class="form-control" name="cookingSteps" rows="2"></textarea>
             </div>
             <div class="file mb-3">
-                <input id="file" type="file" />
+                <input type="file" name="file" />
             </div>
             <div class="form-group mb-3">
                 <label for="text">Chief Name</label>

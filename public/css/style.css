@@ -89,3 +89,12 @@ img.postedImage {
     gap: 1rem;
     margin-bottom: 3rem;
 }
+
+.item>a {
+    text-decoration: none;
+    color: black;
+}
+
+.item>img {
+    width: 15rem;
+}
