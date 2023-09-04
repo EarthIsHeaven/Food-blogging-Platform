@@ -100,7 +100,7 @@ img.postedImage {
 
 }
 
-.item>a:hover {
+.item>a>h2:hover {
     color: blue;
 }
 
@@ -115,4 +115,8 @@ img.postedImage {
 .loginButton,
 .registerButton {
     margin-top: 1rem;
+}
+
+.items>.item {
+    width: 250px;
 }
