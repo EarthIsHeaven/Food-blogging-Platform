@@ -30,13 +30,33 @@ const userSchema = new Schema({
     email: String,
     password: String
 });
-const posts = [];
 
 const User = mongoose.model('User', userSchema);
+
+const postSchema = new Schema({
+    title: String,
+    ingredients: String,
+    cookingSteps: String,
+    chief: String,
+    imageName: String
+});
+
+const Detail = mongoose.model('Detail', postSchema);
 
 app.get("/", function (req, res) {
     res.render("login_register_page.ejs");
 });
+
+app.get("/home", function (req, res) {
+    async function fun() {
+        let posts = await Detail.find({});
+        res.render("home.ejs", {
+            posts: posts
+        });
+    }
+    fun();
+})
+
 app.get("/register", function (req, res) {
     res.render("registerPage.ejs");
 });
@@ -77,31 +97,33 @@ app.get("/post", function (req, res) {
     res.render("post.ejs");
 })
 app.post('/post', upload.single('file'), function (req, res) {
-    const post = {
-        title: req.body.recipeName,
+    let title = _.upperCase(req.body.recipeName);
+    const post = new Detail({
+        title: title,
         ingredients: req.body.ingredients,
         cookingSteps: req.body.cookingSteps,
         chief: req.body.chiefName,
         imageName: req.file.originalname
-    }
-    posts.push(post);
-    res.render("home.ejs", {
-        posts: posts
     });
+    post.save();
+
+    res.redirect("/home");
+
 });
 
 app.get('/posts/:topic', (req, res) => {
-    let requestedTitle = _.lowerCase(req.params.topic);
+    let requestedTitle = _.upperCase(req.params.topic);
 
-    posts.forEach(function (post) {
-        let postedTitle = _.lowerCase(post.title);
+    async function fun() {
+        let posts = await Detail.findOne({ title: requestedTitle });
 
-        if (requestedTitle == postedTitle) {
-            res.render("detail.ejs", {
-                post: post
+        if (posts) {
+            res.render("detail", {
+                post: posts
             });
-        };
-    });
+        }
+    }
+    fun();
 });
 
 app.listen(port, () => {

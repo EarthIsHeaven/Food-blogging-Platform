@@ -83,6 +83,10 @@ img.postedImage {
     width: 30rem;
 }
 
+.detail>img {
+    width: 13rem;
+}
+
 .detail {
     display: flex;
     flex-direction: column;
@@ -93,6 +97,11 @@ img.postedImage {
 .item>a {
     text-decoration: none;
     color: black;
+
+}
+
+.item>a:hover {
+    color: blue;
 }
 
 .item>img {
