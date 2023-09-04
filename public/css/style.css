@@ -107,3 +107,12 @@ img.postedImage {
 .item>img {
     width: 15rem;
 }
+
+.chief {
+    margin-top: 2rem;
+}
+
+.loginButton,
+.registerButton {
+    margin-top: 1rem;
+}

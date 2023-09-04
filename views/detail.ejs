@@ -6,16 +6,23 @@
                 <%= post.title %>
             </h1>
         </div>
-        <h2>
+        <h2>Ingredients</h2>
+        <p>
             <%= post.ingredients %>
-        </h2>
-        <h2>
+        </p>
+
+        <h2>Cooking Steps</h2>
+        <p>
             <%= post.cookingSteps %>
-        </h2>
+        </p>
+
         <img src="/images/<%= post.imageName %>" />
-        <h2>
-            <%= post.chief %>
-        </h2>
+        <div class="chief">
+            <h2>Chief Name</h2>
+            <p>
+                <%= post.chief %>
+            </p>
+        </div>
     </div>
 
     <%- include("partials/footer.ejs") %>
