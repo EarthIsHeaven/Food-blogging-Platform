@@ -43,6 +43,9 @@ const postSchema = new Schema({
 
 const Detail = mongoose.model('Detail', postSchema);
 
+const aboutContent = "Our food blogging platform is a hub for food enthusiasts to discover and share recipes. Explore a wide range of dishes, from traditional to innovative, complete with instructions and visuals. Join our community to share your own recipes and culinary experiences. It's the ultimate destination for food lovers and home chefs!";
+const contactContent = "You can reach out to me via mail abcdef@gmail.com";
+
 app.get("/", function (req, res) {
     res.render("login_register_page.ejs");
 });
@@ -57,6 +60,13 @@ app.get("/home", function (req, res) {
     fun();
 })
 
+app.get("/about", function (req, res) {
+    res.render("about", { aboutContent: aboutContent });
+})
+app.get("/contact", function (req, res) {
+    res.render("contact", { contactContent: contactContent });
+})
+
 app.get("/register", function (req, res) {
     res.render("registerPage.ejs");
 });
@@ -66,7 +76,7 @@ app.post("/register", function (req, res) {
         password: req.body.password
     });
     newUser.save();
-    res.render("home");
+    res.redirect("/home");
 })
 
 app.get("/login", function (req, res) {
@@ -80,7 +90,7 @@ app.post("/login", function (req, res) {
         const foundUsername = await User.findOne({ email: username });
         if (foundUsername) {
             if (foundUsername.password === password) {
-                res.render("home");
+                res.redirect("/home");
             }
             else {
                 res.render("loginPage");

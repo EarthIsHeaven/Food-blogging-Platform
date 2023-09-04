@@ -2,8 +2,13 @@ body {
     background-color: antiquewhite;
 }
 
-.container {
-    min-height: 100vh;
+.homeBox {
+    min-height: 95vh;
+}
+
+.aboutBox,
+.contactBox {
+    height: 75vh;
 }
 
 .footer {
@@ -27,7 +32,7 @@ h1 {
 .box {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 76vh;
     justify-content: center;
     align-items: center;
 }
