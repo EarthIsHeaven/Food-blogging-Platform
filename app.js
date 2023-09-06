@@ -5,6 +5,8 @@ const _ = require("lodash");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const md5 = require("md5");
+let session = require("express-session");
+require("dotenv").config();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -44,6 +46,20 @@ const postSchema = new Schema({
 
 const Detail = mongoose.model('Detail', postSchema);
 
+function requireLogin(req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        res.redirect("/login");
+    }
+}
+
+app.use(session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true
+}));
+
 const aboutContent = "Our food blogging platform is a hub for food enthusiasts to discover and share recipes. Explore a wide range of dishes, from traditional to innovative, complete with instructions and visuals. Join our community to share your own recipes and culinary experiences. It's the ultimate destination for food lovers and home chefs!";
 const contactContent = "You can reach out to me via mail abcdef@gmail.com";
 
@@ -51,7 +67,7 @@ app.get("/", function (req, res) {
     res.render("login_register_page.ejs");
 });
 
-app.get("/home", function (req, res) {
+app.get("/home", requireLogin, function (req, res) {
     async function fun() {
         let posts = await Detail.find({});
         res.render("home.ejs", {
@@ -91,6 +107,7 @@ app.post("/login", function (req, res) {
         const foundUsername = await User.findOne({ email: username });
         if (foundUsername) {
             if (foundUsername.password === md5(password)) {
+                req.session.userId = foundUsername._id;
                 res.redirect("/home");
             }
             else {
@@ -104,7 +121,7 @@ app.post("/login", function (req, res) {
     fun();
 })
 
-app.get("/post", function (req, res) {
+app.get("/post", requireLogin, function (req, res) {
     res.render("post.ejs");
 })
 app.post('/post', upload.single('file'), function (req, res) {
@@ -122,7 +139,7 @@ app.post('/post', upload.single('file'), function (req, res) {
 
 });
 
-app.get('/posts/:topic', (req, res) => {
+app.get('/posts/:topic', requireLogin, (req, res) => {
     let requestedTitle = _.upperCase(req.params.topic);
 
     async function fun() {
