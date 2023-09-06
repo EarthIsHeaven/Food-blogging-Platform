@@ -4,6 +4,7 @@ const ejs = require("ejs");
 const _ = require("lodash");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const md5 = require("md5");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -73,7 +74,7 @@ app.get("/register", function (req, res) {
 app.post("/register", function (req, res) {
     const newUser = new User({
         email: req.body.username,
-        password: req.body.password
+        password: md5(req.body.password)
     });
     newUser.save();
     res.redirect("/home");
@@ -89,7 +90,7 @@ app.post("/login", function (req, res) {
     async function fun() {
         const foundUsername = await User.findOne({ email: username });
         if (foundUsername) {
-            if (foundUsername.password === password) {
+            if (foundUsername.password === md5(password)) {
                 res.redirect("/home");
             }
             else {
