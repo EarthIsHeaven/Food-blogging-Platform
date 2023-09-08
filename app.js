@@ -4,9 +4,11 @@ const ejs = require("ejs");
 const _ = require("lodash");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const md5 = require("md5");
-let session = require("express-session");
+const session = require("express-session");
 require("dotenv").config();
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -20,10 +22,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 const app = express();
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = 3000;
 app.use(express.static("public"));
+
+app.use(session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect('mongodb://127.0.0.1:27017/userDB');
 
@@ -34,7 +45,14 @@ const userSchema = new Schema({
     password: String
 });
 
+userSchema.plugin(passportLocalMongoose);
+
 const User = mongoose.model('User', userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 const postSchema = new Schema({
     title: String,
@@ -46,20 +64,6 @@ const postSchema = new Schema({
 
 const Detail = mongoose.model('Detail', postSchema);
 
-function requireLogin(req, res, next) {
-    if (req.session && req.session.userId) {
-        return next();
-    } else {
-        res.redirect("/login");
-    }
-}
-
-app.use(session({
-    secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: true
-}));
-
 const aboutContent = "Our food blogging platform is a hub for food enthusiasts to discover and share recipes. Explore a wide range of dishes, from traditional to innovative, complete with instructions and visuals. Join our community to share your own recipes and culinary experiences. It's the ultimate destination for food lovers and home chefs!";
 const contactContent = "You can reach out to me via mail abcdef@gmail.com";
 
@@ -67,15 +71,31 @@ app.get("/", function (req, res) {
     res.render("login_register_page.ejs");
 });
 
-app.get("/home", requireLogin, function (req, res) {
-    async function fun() {
-        let posts = await Detail.find({});
-        res.render("home.ejs", {
-            posts: posts
-        });
+app.get("/login", function (req, res) {
+    res.render("loginPage.ejs");
+});
+
+app.get("/post", function (req, res) {
+    if (req.isAuthenticated()) {
+        res.render("post");
+    } else {
+        res.redirect("login");
     }
-    fun();
 })
+
+app.get("/home", function (req, res) {
+    if (req.isAuthenticated()) {
+        async function fun() {
+            let posts = await Detail.find({});
+            res.render("home.ejs", {
+                posts: posts
+            });
+        }
+        fun();
+    } else {
+        res.redirect("/login");
+    }
+});
 
 app.get("/about", function (req, res) {
     res.render("about", { aboutContent: aboutContent });
@@ -87,43 +107,45 @@ app.get("/contact", function (req, res) {
 app.get("/register", function (req, res) {
     res.render("registerPage.ejs");
 });
-app.post("/register", function (req, res) {
-    const newUser = new User({
-        email: req.body.username,
-        password: md5(req.body.password)
+
+app.get("/logout", function (req, res) {
+    req.logOut(function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.redirect("/login");
+        }
     });
-    newUser.save();
-    res.redirect("/home");
 })
 
-app.get("/login", function (req, res) {
-    res.render("loginPage.ejs");
-});
-app.post("/login", function (req, res) {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    async function fun() {
-        const foundUsername = await User.findOne({ email: username });
-        if (foundUsername) {
-            if (foundUsername.password === md5(password)) {
-                req.session.userId = foundUsername._id;
+app.post("/register", function (req, res) {
+    User.register({ username: req.body.username }, req.body.password, function (err, user) {
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function () {
                 res.redirect("/home");
-            }
-            else {
-                res.render("loginPage");
-            }
+            });
         }
-        else {
-            res.render("loginPage")
-        }
-    }
-    fun();
-})
+    });
+});
 
-app.get("/post", requireLogin, function (req, res) {
-    res.render("post.ejs");
-})
+app.post("/login", function (req, res) {
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
+    req.login(user, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            passport.authenticate("local")(req, res, function () {
+                res.redirect("/home");
+            });
+        }
+    })
+});
+
 app.post('/post', upload.single('file'), function (req, res) {
     let title = _.upperCase(req.body.recipeName);
     const post = new Detail({
@@ -139,19 +161,23 @@ app.post('/post', upload.single('file'), function (req, res) {
 
 });
 
-app.get('/posts/:topic', requireLogin, (req, res) => {
-    let requestedTitle = _.upperCase(req.params.topic);
+app.get('/posts/:topic', (req, res) => {
+    if (req.isAuthenticated()) {
+        let requestedTitle = _.upperCase(req.params.topic);
 
-    async function fun() {
-        let posts = await Detail.findOne({ title: requestedTitle });
+        async function fun() {
+            let posts = await Detail.findOne({ title: requestedTitle });
 
-        if (posts) {
-            res.render("detail", {
-                post: posts
-            });
+            if (posts) {
+                res.render("detail", {
+                    post: posts
+                });
+            }
         }
+        fun();
+    } else {
+        res.redirect("/login");
     }
-    fun();
 });
 
 app.listen(port, () => {

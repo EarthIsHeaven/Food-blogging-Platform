@@ -61,9 +61,17 @@ form.register {
     width: 26rem;
 }
 
-.addPost {
+/* .addPost {
     display: flex;
     justify-content: end;
+} */
+
+.twoButtons {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    margin-left: 90%;
+    gap: 1rem;
 }
 
 .items {
