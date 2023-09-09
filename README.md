@@ -1,4 +1,5 @@
 # Food-blogging-Platform
+Full-Stack Web Application
 
 This is food blogging platform which offers a delightful culinary experience, where users can explore and share recipes with detailed cooking instructions, ingredient lists, chef information, and tantalizing food photos. To ensure security and personalization, the platform requires user registration and login.
 
